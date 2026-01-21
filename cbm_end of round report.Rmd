@@ -1,0 +1,439 @@
+---
+title: "Community-based monitoring"
+subtitle: "South Hebron Hills, Hebron Governorate"
+output: 
+  word_document:
+    reference_docx: "C:/Users/msfe-jerusalem-epi/OneDrive - MSF/1_Epidemiology/3_Projects/2_DMC_2024/2_CBS/2_Scripts/1_Input_Files/report_template.docx"
+    toc: true
+    toc_depth: 2
+author: "Hebron project, Palestine mission, MSF-Spain"
+date: "End-of-round report: `r most_recent_round`"
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE,
+                      tab.cap.pre	= '', tab.cap.sep = '.', tab.cap.tnd = '', 
+                      ft.align="right",
+                      fig.show = TRUE)
+
+```
+
+# Summary of key findings
+
+[Insert summary of key findings based on most recent results.]
+
+\newpage
+
+# Introduction
+## Background
+
+The Decentralized Model of Care (DMC) is designed to provide access to quality, comprehensive primary healthcare services, including preventive and curative care, as well as sexual and reproductive health services, for populations in remote areas and outside of health structures that lack regular access to healthcare and for victims of violence. As part of the DMC strategy, a CBM program was implemented to track and assess health indicators in communities within the South Hebron Hills which are isolated from standard medical services and resources.
+
+## Objectives
+
+The CBM aims to generate timely and detailed data on key health indicators within Hebron communities to optimize healthcare delivery and improve health outcomes for beneficiary populations. The data collected provides insights into various aspects of community health, including demographics, mortality rates, reproductive health, vaccination coverage, healthcare access, and the prevalence of mental health symptoms.
+
+Beyond core health indicators, the CBM program also monitors humanitarian factors such as financial hardship, food security, access to clean water, and experiences of violence. This comprehensive dataset enables MSF to identify opportunities to enhance healthcare services, address gaps in public health education and awareness, and advocate for the needs of Hebron communities to external stakeholders.
+
+# Methodology
+
+## Data collection
+Six Community Health Workers (CHWs) conducted household visits within their respective communities and neighboring areas to introduce the objectives of the CBM program. Prior to administering the survey, informed verbal consent was obtained from the primary caregiver or head of household. Given the small population size, the survey was conducted exhaustively, covering all households. The survey takes approximately 15 minutes to complete on average. 
+
+Data collection was carried out using mobile phones via Kobo Collect, an open-source mobile data collection platform. Surveys will be conducted every four months as part of an ongoing monitoring process to assess trends in key indicators. The full questionnaire is available in Appendix A and will be adapted prior to each round to reflect the evolving information needs of the project teams.
+To ensure data quality and promptly address potential issues, an automated daily quality control report was generated, monitoring key indicators such as interview duration and time intervals between interviews.
+
+## Data analysis
+
+Descriptive statistics, including frequencies and proportions, were used to summarize key characteristics of the study population.
+
+[If additional analyses were performed (e.g. regression models), insert methodology here]
+
+Data analysis was performed using R version 4.4.2.
+
+# Results
+## Survey coverage
+
+A total of `r total_households_full` households across `r total_communities` communities were visited during this round (Figure 1). Of these, `r absent_households` were absent, and `r declined_households` declined participation. `r completed_households` households completed the interview, representing a total of `r total_individuals` individuals. 
+
+*Figure 1. Map of communities included in the survey*
+
+[Insert map of communities surveyed]
+
+<br>
+
+*Table 1. Overview of survey coverage, per community - `r most_recent_round`*
+```{r table_1, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE}
+overview_table_flex
+
+```
+
+<br>
+
+Table 2 shows the evolution of survey coverage over time. 
+
+<br>
+*Table 2. Overview of survey coverage, per round*
+```{r table_2, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE}
+overview_per_round
+
+```
+
+<br>
+
+## Demographics
+
+The average household size was `r average_household_size` individuals, with sizes ranging from a minimum of `r min_household_size ` to a maximum of `r max_household_size` household members. Among the adult population, `r female_percentage`% were female, and `r female_headed_households_percentage`% of households were female-headed. `r under_5_percentage`% of individuals (n=`r under_5_count`) were under the age of 5, while `r aged_5_to_17_percentage`% (n=`r aged_5_to_17_count`) were aged between 5 and 17 years. Table 3 shows the evolution of demographics over time. 
+
+*Table 3. Overview of demographics, per round*
+```{r table_3, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE}
+demographics_per_round
+
+```
+
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "disability"] == "active") {
+  knitr::asis_output(paste0(
+    "Additionally, ", disability_percentage, "% of households (n=", disability_count, ") reported that at least one member had a disability (Table 4).\n\n",
+    
+"*Table 4. Number and proportion of households with at least one disabled person, per community*"
+  ))
+}
+```
+
+```{r table_4, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "disability"] == "active")}
+disability_stats_table
+
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "mortality"] == "active") {
+  knitr::asis_output(paste0(
+    "## Mortality\n\n",
+    "In total, ", num_deaths, " deaths were reported during this round, which corresponds to a crude mortality rate of ", crude_mortality_rate, " deaths per 1,000 people. Demographic information and causes of death are summarized in Table 5, and the evolution per round is in Table 6.\n\n",
+    "*Table 5. Demographic information and causes of death*"
+  ))
+}
+```
+
+```{r table_5, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "mortality"] == "active")}
+deaths_flextable
+
+```
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "mortality"] == "active") {
+  knitr::asis_output(paste0(
+    "*Table 6. Number of deaths and CMR, per round*"
+  ))
+}
+```
+```{r table_6, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "mortality"] == "active")}
+mortality_flextable
+
+```
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "pregnancy"] == "active") {
+  knitr::asis_output(paste0(
+    "## Pregnancy outcomes\n\n",
+    "The number of women who had completed a pregnancy (including still births, miscarriage, or abortions) in 30 days prior to the interview was ", num_preg, ". Among these pregnancies, ", live_births_percent, "% (n=", live_births, ") resulted in live births, ", still_births_percent, "% (n=", still_births, ") resulted in still births, and ", miscarriages_percent, "% (n=", miscarriages, ") resulted in miscarriages or abortions. Of the women who gave birth, ", hosp_delivery_percent, "% (n=", hosp_delivery, ") delivered in a hospital. Additionally, ", ANC_attended_percent, "% (n=", ANC_attended, ") of women attended antenatal care (ANC), with an average of ", num_consultations, " ANC consultations per woman. Furthermore, ", PNC_attended_percent, "% (n=", PNC_attended, ") of women attended postnatal care (PNC).\n\n",
+    "*Table 7. Pregnancy information, per round*"
+  ))
+}
+```
+```{r table_7, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "pregnancy"] == "active")}
+pregnancy_evolution_flextable
+
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "health_seeking"] == "active") {
+  knitr::asis_output(paste0(
+    "## Health-seeking behaviors\n\n",
+    "In 30 days prior to the interview, ", num_ill_or_both, " individuals reported experiencing an illness, and ", num_injured_or_both, " reported an injury (note: these are non-mutually exclusive categories). Of those reporting an illness or injury, ", proportion_care_required, "% (n=", num_care_required, ") indicated that their condition required medical attention. Among those needing care, ", proportion_medical_care_y, "% (n=", num_medical_care_y, ") were able to obtain it. This access rate was ", proportion_medical_care_y_under_5, "% (n=", num_medical_care_y_under_5, ") for children under five.\n\n",
+    "The community with the highest proportion of individuals unable to access medical care when needed was ", community_lower_care_access, ", with ", proportion_unable_to_access_care, "% (n=", num_people_unable_to_access_care, ") of ill or injured individuals who required care being unable to access it. Figure 2 shows the proportion unable to access care for each community, and table 8 shows the evolution of health seeking behavior over time.\n\n",
+    "*Figure 2. Proportion unable to access care when needed, per community (n=", num_medical_care_n, ")*\n"
+    ))
+}  
+```
+```{r figure_2, fig.width=4, fig.height=3, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "health_seeking"] == "active")}
+care_access_graph
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "health_seeking"] == "active") {
+  knitr::asis_output(paste0(
+"*Table 8. Evolution of health seeking behavior, per round*"
+  ))
+}  
+```
+```{r table_8, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "health_seeking"] == "active")}
+ft_summary
+
+```
+
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "health_seeking"] == "active") {
+  knitr::asis_output(paste0(
+    "Figure 3 shows the most commonly cited reasons for not seeking care.\n\n",
+    
+"*Figure 3. Reasons for being unable to access care when needed (n=", num_medical_care_n,")*"
+  ))
+}  
+```
+```{r figure_3, fig.width=9, fig.height=4.5, out.width="100%", ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "health_seeking"] == "active")}
+reasons_no_care
+
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "health_seeking"] == "active") {
+  knitr::asis_output(paste0(
+    "Among individuals who reported not seeking care due to a lack of transportation, ", confiscation_count, "% (n=", confiscation_prop, ") cited having their car confiscated, while ", fear_confiscation_prop, "% (n=", fear_confiscation_count, ") refrained from seeking care out of fear that their car might be confiscated.\n\n",
+    "For those who needed care but were unable to receive it, the most common coping mechanisms included \"", most_common_coping_name, "\" (n=", most_common_coping_count, ", ", most_common_coping_proportion, "%), \"", second_most_common_coping_name, "\" (n=", second_most_common_coping_count, ", ", second_most_common_coping_proportion, "%), and \"", third_most_common_coping_name, "\" (n=", third_most_common_coping_count, ", ", third_most_common_coping_proportion, "%)."
+  ))
+}
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "vaccination"] == "active") {
+  knitr::asis_output(paste0(
+    "## Vaccination coverage\n\n",
+    "The 2-dose Measles, Mumps, and Rubella (MMR) vaccine serves as a key indicator of overall routine vaccination status. The Palestinian Ministry of Health (MoH) currently recommends administering the first dose of the MMR vaccine at 12 months and the second dose at 18 months.\n\n",
+    "Among the ", num_children_12_59, " children aged 12-59 months surveyed during this round, ", prop_vax_card, "% (n=", num_vax_card, ") had a vaccination card available, ", prop_vax_card_else, "% (n=", num_vax_card_else, ") had a vaccination card that was not accessible (e.g., kept elsewhere), and ", prop_vax_card_no, "% (n=", num_vax_card_no, ") did not have a vaccination card.\n\n",
+    "Among children with a vaccination card available, ", prop_fully_vax_card, "% (n=", num_fully_vax_card, ") of age-eligible children (18 months and older) had received two doses of the measles, mump and rubella (MMR) vaccine, while ", prop_ever_vax_card, "% (n=", num_ever_vax_card, ") of those aged 12 months and older had received at least one dose.\n\n",
+    "When including children with self-reported vaccination status (e.g., no card or unavailable card), ", prop_fully_vax_total, "% (n=", num_fully_vax_total, ") of age-eligible children had received two doses of the MMR vaccine, and ", prop_ever_vax_total, "% (n=", num_ever_vax_total, ") had received at least one dose.\n\n",
+"*Figure 3. MMR vaccination coverage among children aged 12-59 months (n=", num_children_12_59,")*"
+  ))
+}
+```
+
+```{r figure_9, fig.width=4, fig.height=3, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "vaccination"] == "active")}
+vax_plot
+
+```
+
+<br>
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "vaccination"] == "active") {
+  knitr::asis_output(paste0(
+    "*Table 9. Evolution of vaccination coverage, per round*"
+  ))
+}
+```
+```{r table_9, fig.width=4, fig.height=3, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "vaccination"] == "active")}
+vaccination_flextable
+
+```
+
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "food_security"] == "active") {
+  knitr::asis_output(paste0(
+    "## Food security and children nutritional status\n\n",
+    "Among the ", nrow(filter(data_edit_current, consent == "y")), " households surveyed, ", percent_insecure, "% (n=", households_insecure, ") reported not having enough food during the week prior to the interview. Among these households, ", percent_limit, "% (n=", households_limit, ") had to limit portion sizes at mealtimes, ", percent_restrict, "% (n=", households_restrict, ") had to restrict food consumption by adults so that children could eat, and ", percent_reduce, "% (n=", households_reduce, ") had to reduce the overall number of meals.\n\n",
+    "Table 10 shows the number and proportion of households reporting food insecurity by community, and table 11 shows the evolution per round.\n\n",
+    "*Table 10. Number and proportion of households reporting food insecurity, per community*"
+  ))
+}
+```
+
+```{r table_10, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "food_security"] == "active")}
+food_insecure_flextable
+
+```
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "food_security"] == "active") {
+  knitr::asis_output("*Table 11. Number and proportion of households reporting food insecurity, per round*")
+}
+```
+
+```{r table_11, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "food_security"] == "active")}
+ft_food_insecurity
+
+```
+
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "food_security"] == "active") {
+  knitr::asis_output(paste0(
+    "Among the ", total_children, " children aged 6-59 months included in this round, ", percent_present, "% (n=", children_present, ") were at home and available during the interview. The Mid-Upper Arm Circumference (MUAC) was measured for ", percent_muac_measured, "% (n=", children_muac_measured, ") of these children to assess their nutritional status.\n\n",
+    "Of the children assessed, ", percent_normal, "% (n=", children_normal, ") had a normal nutritional status (green result), ", percent_moderate_malnutrition, "% (n=", children_moderate_malnutrition, ") presented with moderate acute malnutrition (yellow result), and ", percent_severe_malnutrition, "% (n=", children_severe_malnutrition, ") were classified with severe acute malnutrition (red result).\n\n",
+    "*Table 12. Results from MUAC assessment, per round*"
+  ))
+}
+```
+
+```{r table_12, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "food_security"] == "active")}
+muac_flextable
+
+```
+
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "mental_health"] == "active") {
+  knitr::asis_output(paste0(
+    "## Mental health\n\n",
+    "The mental health status of the community was assessed using the Patient Health Questionnaire-4 (PHQ-4) (see Appendix A). All available adults (aged 18 and older) in the household were asked four questions to identify symptoms associated with depression and/or anxiety.\n\n",
+    "Out of the ", total_adults, " adults living in the surveyed households, ", proportion_present, "% (n=", num_present, ") were present and available to answer individual questions at time of interview (", proportion_women_present, "% of women and ", proportion_men_present, "% of men). Among those present, ", proportion_consented, "% (n=", num_consented, ") agreed to answer questions about their mental health, corresponding to a refusal rate of ", refusal_rate_women, "% among women and ", refusal_rate_men, "% among men.\n\n",
+    "Among the ", total_mh_respondents, " respondents (", total_mh_women, " women and ", total_mh_men, " men), ", phq4_high_severity_proportion, "% (n = ", phq4_high_severity_count, ") had a PHQ-4 score of 3 or higher, indicating symptoms of anxiety or depression. The overall severity of symptoms, as well as the breakdown by gender, is presented in Table 13. Additionally, Figure 5 illustrates the proportion of respondents experiencing symptoms of depression and anxiety, per age group.\n\n",
+    "*Table 13. Severity of mental health symptoms, overall and by gender (n=", non_missing_phq4_count, ")*"
+  ))
+}
+```
+
+```{r table_13, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "mental_health"] == "active")}
+phq4_table
+
+```
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "mental_health"] == "active") {
+  knitr::asis_output(paste0("*Figure 5. Proportion of adults reporting symptoms of anxiety and depression, per age group (n=", non_missing_phq4_count, ")*"
+  ))
+}
+```
+
+```{r figure_5,   fig.width=5, fig.height=3, out.width="100%", ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "mental_health"] == "active")}
+mh_age_graph
+
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "mental_health"] == "active") {
+  knitr::asis_output(paste0(
+    "*Table 14. Proportion of adults reporting mental health symptoms, per round*"
+  ))
+}
+```
+
+```{r table_14, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "mental_health"] == "active")}
+mental_health_flextable
+
+```
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "water_access"] == "active") {
+  knitr::asis_output(paste0(
+    "## Access to water\n\n",
+    "Out of the ", total_households_surveyed, " households surveyed, ", difficulties_percentage, "% (n=", difficulties_count, ") indicated they faced difficulties accessing clean water within the past three months. The number of days without water access is depicted in Figure 6.\n\n",
+    "*Figure 6. Number of days without access to clean water (past three months)*"
+  ))
+}
+```
+
+```{r figure_6,  fig.width=4, fig.height=3, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "water_access"] == "active")}
+water_days_graph
+
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "water_access"] == "active") {
+  knitr::asis_output(paste0(
+    "For those who reported challenges in accessing clean water, the most common issues were \"", difficulty_1, "\" (n=", difficulty_1_count, ", ", difficulty_1_percentage, "%), \"", difficulty_2, "\" (n=", difficulty_2_count, ", ", difficulty_2_percentage, "%), and \"", difficulty_3, "\" (n=", difficulty_3_count, ", ", difficulty_3_percentage, "%).\n\n",
+    "When asked about the impact of limited water access on their daily lives and activities, the most frequent responses included \"", impact_1, "\" (n=", impact_1_count, ", ", impact_1_percentage, "%), \"", impact_2, "\" (n=", impact_2_count, ", ", impact_2_percentage, "%), and \"", impact_3, "\" (n=", impact_3_count, ", ", impact_3_percentage, "%)."
+  ))
+}
+```
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "water_access"] == "active") {
+  knitr::asis_output(paste0(
+    "*Table 15. Number of days without access to clean water, per round*"
+  ))
+}
+```
+
+```{r table_15, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "water_access"] == "active")}
+clean_water_flextable
+
+```
+<br>
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "financial_hardship"] == "active") {
+  knitr::asis_output(paste0(
+    "## Financial hardship\n\n",
+    "Respondents were asked to reflect on their household's financial situation since October 2023 and indicate whether it has worsened, improved, or remained the same. The majority of respondents reported that their financial situation has \"", top_category_1, "\" (n=", top_category_1_count, ", ", top_category_1_proportion, "%) or \"", top_category_2, "\" (n=", top_category_2_count, ", ", top_category_2_proportion, "%). A more detailed overview is available in Figure 7.\n\n",
+    "*Figure 7. Change in household's financial situation since October 2023*"
+  ))
+}
+```
+
+```{r figure_7,   fig.width=4, fig.height=3, out.width="100%", ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "financial_hardship"] == "active")}
+bar_graph_finances
+
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "financial_hardship"] == "active") {
+  knitr::asis_output(paste0(
+    "Among individuals who experienced a decline in their financial situation, the most common contributing factors included \"", factor_1, "\" (n=", count_1, ", ", proportion_1, "%), \"", factor_2, "\" (n=", count_2, ", ", proportion_2, "%) and \"", factor_3, "\" (n=", count_3, ", ", proportion_3, "%). All contributing factors are detailed in Table 16.\n\n",
+    "*Table 16. Factors contributing to worsening of financial situation (n=", filtered_data_finances1, ")*"
+  ))
+}
+```
+
+```{r table_16, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, message=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "financial_hardship"] == "active")}
+contributing_factors_table
+
+```
+
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "violence"] == "active") {
+  knitr::asis_output(paste0(
+    "## Experiences of violence\n\n",
+    "Respondents were asked if anyone in their household had experienced or witnessed a violent event carried out by settlers or soldiers in the past three months. The findings reveal that ", witnessed_percentage, "% (n=", witnessed_count, ") of households had at least one member who witnessed violence, and ", experienced_percentage, "% (n=", experienced_count, ") of households had at least one member who experienced it. A detailed breakdown of the different types of violence reported can be found in Figure 8.\n\n",
+    "When asked about the perpetrators of violence, respondents indicated that ", soldier_proportion, "% (n=", soldier_count, ") of violent events were perpetrated by soldiers, ", settler_civilian_proportion, "% (n=", settler_civilian_count, ") by settlers in civilian clothes, ", settler_military_proportion, "% (n=", settler_military_count, ") by settlers in military clothes, and ", settler_soldier_proportion, "% (n=", settler_soldier_count, ") by both settlers and soldiers. Additionally, respondents were unsure about the identity of the perpetrators for ", unsure_proportion, "% (n=", unsure_count, ") of events.\n\n",
+    "*Figure 8. Types of violence witnessed or experienced (past three months)*"
+  ))
+}
+```
+
+```{r figure_8,   fig.width=9, fig.height=4.5, out.width="100%", ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "violence"] == "active")}
+violence_horizontal_bar_chart
+
+```
+<br>
+```{r, include=TRUE}
+if (active_modules$status[active_modules$module == "violence"] == "active") {
+  knitr::asis_output(paste0(
+    "*Table 17. Proportion of households where at least one member has witnessed or experienced violence, per round*"
+  ))
+}
+```
+```{r table_17, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE, message=FALSE, message=FALSE, eval=any(active_modules$status[active_modules$module == "violence"] == "active")}
+violence_flextable
+
+```
+
+\newpage
+
+# Operational recommendations 
+
+[Section to be filled manually after gathering feedback from project and coordination team.]
+
+\newpage
+
+# Acronyms
+
+# Appendix 
+
+
+

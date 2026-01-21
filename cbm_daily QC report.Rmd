@@ -1,0 +1,82 @@
+---
+title: "Community-based monitoring: Daily quality control"
+output: 
+  word_document:
+    reference_docx: "C:/Users/msfe-jerusalem-epi/OneDrive - MSF/1_Epidemiology/3_Projects/2_DMC_2024/2_CBS/2_Scripts/1_Input_Files/report_template.docx"
+author: "Hebron Project, Palestine Mission, MSF-Spain"
+date: "Date produced: `r paste(format(Sys.Date(), '%B %d, %Y'))`"
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE,
+                      tab.cap.pre	= '', tab.cap.sep = '.', tab.cap.tnd = '', 
+                      ft.align="right",
+                      fig.show = TRUE)
+
+```
+
+# 1. Introduction
+
+This automated report provides an overview of the data collection process during the current round of community-based monitoring. It provides an update on the current survey coverage (Table 1), an overview of interview duration (Table 2) and interval between interviews (Table 3), as well as an overview of the proportion of individuals reporting being ill or injured (Table 4), and the proportion of children for whom the MUAC was measured (Table 5). The report can be used as a tool to monitor progress, staff performance and data quality.
+
+# 2. Overview 
+
+As of `r paste(format(Sys.Date(), '%B %d, %Y'))`, a total of `r n_distinct(data_edit_current$id)` households across `r n_distinct(data_edit_current$community)` communities had been visited for the survey. Of these, `r nrow(filter(data_edit_current, hh_present == "n"))` were absent, and `r nrow(filter(data_edit_current, consent == "n"))` declined participation. So far, `r nrow(filter(data_edit_current, consent == "y"))` households completed the interview, representing a total of `r round(sum(data_edit_current$hh_size, na.rm = TRUE), 0)` individuals.
+
+*Table 1. Overview of target and coverage, per CHW*
+
+```{r create_summary, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE}
+QC_summary_table_flex
+
+```
+
+\newpage
+
+# 3. Interview duration and interval between interviews
+
+*Table 2. Interview duration, per CHW*
+
+```{r create_interview_lenght, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE}
+
+QC_interview_length_table
+
+```
+
+<br>
+
+<br>
+*Table 3. Interval between interviews, per CHW (previous 7 days)*
+
+```{r interval_length, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE}
+
+QC_interval_table_flex
+
+```
+
+\newpage
+# 4. Data quality
+
+*Table 4. Proportion of ill or injured individuals, per CHW*
+
+```{r proportion_ill, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE}
+
+sick_percentage_table_flex
+
+```
+
+<br>
+
+*Table 5. Proportion of children with MUAC measurement, per CHW*
+
+```{r muac, ft.align = "left", echo=FALSE, warning=FALSE, message=FALSE}
+
+QC_ft_muac
+
+```
+
+
+
+
+
+
